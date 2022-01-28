@@ -4,9 +4,7 @@
 
 @php
     $id=Session::get('id_usuario');
-    $result=DB::table('users')
-            ->where('id_usuario', $id)
-            ->first();
+    $result=$data;
 @endphp
 
 @section('content')

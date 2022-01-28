@@ -3,9 +3,7 @@
 @section('title','Produccion academica')
 
 @php
-    $result=DB::table('articulos')
-        ->orderBy('id_articulo')
-        ->get();
+    $result=$data;
 @endphp
 
 @section('content')
@@ -15,6 +13,7 @@
           <th scope="col">ID</th>
           <th scope="col">Titulo</th>
           <th scope="col">Autor principal</th>
+          <th scope="col">Tipo articulo</th>
           <th scope="col">Revista</th>
           <th scope="col">Url</th>
           <th scope="col">Archivo</th>
@@ -23,15 +22,15 @@
       </thead>
       @foreach($result as $articulos)
       @php
-        $autores=DB::table('autores')
-            ->where('id_autores', $articulos->autores)
-            ->first();
+        $autores=$articulos->getAutores($articulos->autores);
+        $tipo=$articulos->getTipo($articulos->tipo_art);
       @endphp
       <tbody>
         <tr>
           <td class="center">{{ $articulos->id_articulo }}</td>
           <td class="center">{{ $articulos->titulo }}</td>
           <td class="center">{{ $autores->autor1 }}</td>
+          <td class="center">{{ $tipo }}</td>
           <td class="center">{{ $articulos->revista }}</td>
           <td class="center">{{ $articulos->url }}</td>
           <td class="center">

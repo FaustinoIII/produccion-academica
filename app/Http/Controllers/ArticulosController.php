@@ -7,6 +7,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\articulo;
+use App\Models\autores;
+
 session_start();
 
 class ArticulosController extends Controller
@@ -26,101 +29,85 @@ class ArticulosController extends Controller
         }    
     
     }
-    
-    public function save_articles(Request $request){
-     $autores=array();
-        $autores['autor1']=$request->autor1;
-        $autores['autor2']=$request->autor2;
-        $autores['autor3']=$request->autor3;
-        $autores['autor4']=$request->autor4;
-        DB::table('autores')->insert($autores);
-        $result=DB::selectOne('select MAX(id_autores) as id_autores from autores');
 
-     $articulo=array();
-        $articulo['titulo']=$request->titulo;
-        $articulo['abstract']=$request->abstract;
-        $articulo['revista']=$request->revista;
-        $articulo['autores']=strval($result->id_autores);            
-        $articulo['url']=$request->url;
-        $articulo['tipo']=$request->tipo_art;      
+    public function index_mongo(){
+        //$this->AdminAuthCheck();
+        return view('registrar_art');
+    }
+    
+    public function insertar_mongo(Request $request){
+        $result = autores::max('id_autores');
+        $id_aux = intval($result);
+        $id_aux++;
+
+        $autores = new autores();
+        $autores->id_autores=strval($id_aux);
+        $autores->autor1=$request->autor1;
+        $autores->autor2=$request->autor2;
+        $autores->autor3=$request->autor3;
+        $autores->autor4=$request->autor4;
+        $autores->save();
+
+        $result = articulo::max('id_articulo');
+        $id_aux2 = intval($result);
+        $id_aux2++;
+
+        $articulo = new articulo();
+        $articulo->id_articulo=strval($id_aux2);
+        $articulo->titulo=$request->titulo;
+        $articulo->abstract=$request->abstract;
+        $articulo->revista=$request->revista;
+        $articulo->autores=strval($id_aux);            
+        $articulo->url=$request->url;
+        $articulo->tipo_art=$request->tipo_art;  
         
-        
-     $pdf=array();
+        $pdf=array();
         $pdf=$request->file('pdf');
         $pdf_name=$pdf->getClientOriginalName();
-        $ext=strtolower($pdf->getClientOriginalExtension());
-        $pdf_full_name=$pdf_name;
         $upload_path='articulos/';
-        $pdf_url=$upload_path.$pdf_full_name;
-        $success=$pdf->move($upload_path,$pdf_full_name);
+        $pdf_url=$upload_path.$pdf_name;
+        $success=$pdf->move($upload_path,$pdf_name);
         if($success){
-            $articulo['pdf']=$pdf_url;                
-            DB::table('articulos')
-                ->insert($articulo);
+            $articulo->pdf=$pdf_url;                
+            $articulo->save();
             Session::put('message', 'Has agregado un nuevo articulo ');
             return Redirect::to('/add-article');    
         }else{
             Session::put('message', 'Error al registrar articulo ');
             return Redirect::to('/add-article'); 
-        }      
-       
+        } 
+
     }
-    
-        public function all_project(){
-        $this->AdminAuthCheck();
-        $empresa_id=Session::get('empresa_id');
-        $all_project_info=DB::table('tbl_proyecto')
-               ->where('empresa_id', $empresa_id)
-               ->get();     
-        $manage_project=view('empresa.all_project')
-            ->with('all_project_info', $all_project_info);
-        return view('adminEmpresa_layout')
-            ->with('empresa.all_project', $manage_project);
-                
+
+    public function buscar($tipo, $contenido){
+        if($tipo=='1'){
+            $articulos = articulo::where('titulo', 'like', '%'.$contenido.'%')->get();
+            return view('home',compact('articulos'));
+        }elseif($tipo=='2'){
+            $autores = autores::where('autor1', 'like', '%'.$contenido.'%')->get();
+            $articulos = articulo::where('autores', $autores->id_autores)->get();
+        }elseif($tipo=='3'){
+            $articulos = articulo::where('revista', 'like', '%'.$contenido.'%')->get();
+            return view('home',compact('articulos'));
+        }elseif($tipo=='4'){
+            $articulos = articulo::where('tipo_art', 'like', '%'.$contenido.'%')->get();
+            return view('home',compact('articulos'));
+        }
     }
     
     public function delete_articles($id){
        $this->AdminAuthCheck();
-       DB::table('articulos')
-                    ->where('id_articulo', $id)
+       articulo::where('id_articulo', $id)
                     ->delete();
         return Redirect::to('/admin_art');
     }
-    
-    public function unactive_project($proyecto_id){
-        DB::table('tbl_proyecto')
-            ->where('proyecto_id', $proyecto_id)
-            ->update(['status_proyecto'=>0]);
-            Session::put('message', 'El proyecto ha sido activado ');
-            return Redirect::to('/all-project');
-    }
-    
-    public function active_project($proyecto_id){
-        DB::table('tbl_proyecto')
-            ->where('proyecto_id', $proyecto_id)
-            ->update(['status_proyecto'=>1]);
-            Session::put('message', 'El proyecto ha sido desactivado ');
-            return Redirect::to('/all-project');
-    }
 
     public function descargar($id){
-        $result = DB::table('articulos')
-            ->where('id_articulo', $id)
+        $result = articulo::where('id_articulo', $id)
             ->first();
             $path = public_path(path:"\\".$result->pdf);
   
         return response()->download(file:$path);
-    }
-    
-     public function edit_project($proyecto_id){      
-        $project_info=DB::table('tbl_proyecto')
-                    ->where('proyecto_id', $proyecto_id)
-                    ->first();
-        $project_info=view('empresa.edit_project')
-            ->with('project_info', $project_info);
-        return view('adminEmpresa_layout')
-            ->with('empresa.edit_project', $project_info);
-                
     }
     
      public function update_project(Request $request, $proyecto_id){             

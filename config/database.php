@@ -94,8 +94,8 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://user1:<1q2w3e>@cluster0.i9liq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'),
-            'database' => 'test',
+            'dsn' => env('DB_DSN'),
+            'database' =>  env('DB_DATABASE', 'test'),
         ],
 
     ],

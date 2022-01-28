@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\articulo;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\usuario;
 session_start();
 
 class SuperAdminController extends Controller
 {
     public function index(){
         $this->AdminAuthCheck();
-        return view('/admin_usuarios');
+        $data=usuario::all();
+        return view('/admin_usuarios',compact('data'));
     }
     
     public function articulos(){
         $this->AdminAuthCheck();
-        return view('/admin_art');
+        $data=articulo::all();
+        return view('/admin_art',compact('data'));
     }
 
     public function logout(){

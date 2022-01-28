@@ -7,25 +7,27 @@
         <!-- Collapsible wrapper -->
         <div class="form-group">
           <label class="control-label" for="id_almacen">Buscar por: </label>
-          <select id="busquedaClasificacion" name= "id_almacen" class="form-select">
-            <option selected>seleccione</option>
-            <option>Titulo del articulo</option>
-            <option>Autor</option>
-            <option>Revista</option>
-            <option>Tipo de articulo</option>
+          <select id="busquedaClasificacion" name= "busqueda" class="form-select">
+            <option selected value='0'>seleccione</option>
+            <option value = '1'>Titulo del articulo</option>
+            <option value = '2'>Autor</option>
+            <option value = '3'>Revista</option>
+            <option value = '4'>Tipo de articulo</option>
           </select>
         </div>
-        <!-- Left links -->
-
-        <!-- Search form -->
-        <div class="input-group ps-5">
-          <div id="navbar-search-autocomplete" class="form-outline">
-            <input type="search" id="form1" class="form-control" />
+        
+        <form action="{{url('/busqueda/'.'1')}}" >
+          <div class="input-group ps-5">
+            <div id="navbar-search-autocomplete" class="form-outline">
+              <input type="search" id="form1" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">
+              Buscar
+            </button>
           </div>
-          <button type="button" class="btn btn-primary">
-            Buscar
-          </button>
-        </div>
+        </form>
+        <!-- Search form -->
+        
         <!-- Collapsible wrapper -->
       </div>
       <!-- Container wrapper -->

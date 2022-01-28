@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class autores extends Model
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+
+class autores extends Eloquent
 {
-    use HasFactory;
+    protected $connection = 'mongodb';
+    protected $collection = 'autores';
+    protected $table = 'autores';
+    protected $primaryKey = 'id_autores';
+
+    protected $fillable = [
+        'id_autores','autor1','autor2','autor3','autor4','created_at'
+    ];
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\usuario;
 session_start();
 
 class AdminController extends Controller
@@ -17,9 +18,8 @@ class AdminController extends Controller
     public function dashboard(Request $request){
         $admin_email=$request->admin_email;
         $admin_password=$request->admin_password;
-        $result=DB::table('users')
-            ->where('email', $admin_email)
-            ->where('password', $admin_password)
+        $result=usuario::where('email', $admin_email)
+            ->where('password', $admin_password) 
             ->where('tipo_usuario','1')
             ->first();
         if($result){
@@ -35,8 +35,7 @@ class AdminController extends Controller
     
     
     public function all_users(){
-        $all_users_info=DB::table('users')
-               ->get();     
+        $all_users_info=usuario::all();     
         $manage_users=view('admin.admin_users')
             ->with('all_users_info', $all_users_info);
         return view('layouts.admin_lay')

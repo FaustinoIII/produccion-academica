@@ -40,18 +40,25 @@ Route::post('/user-login', [UserController::class,'user_login']);
 Route::get('/user-logout', [UserController::class,'user_logout']);
 Route::get('/dashboard-user', [SuperAdminUserController::class,'index_user']);
 Route::post('/admin-dashboard-user', [AdminUserController::class,'dashboard_user']);
-Route::get('/manage-user-profile', [UserController::class,'manage_user_profile']);
 Route::post('/update-user-profile/{id_usuario}', [UserController::class,'update_user_profile']);
 Route::get('/registro', [UserController::class,'registro']);
 
 //Rutas articulos
-Route::get('/add-article', [ArticulosController::class,'index_art']);
-Route::get('/all-articles', [ArticulosController::class,'all_articles']);
-Route::post('/save-article', [ArticulosController::class,'save_articles']);
+//Route::get('/add-article', [ArticulosController::class,'index_art']);
+//Route::get('/all-articles', [ArticulosController::class,'all_articles']);
+//Route::post('/save-article', [ArticulosController::class,'save_articles']);
 Route::get('/edit-article/{articulo_id}', [ArticulosController::class,'edit_articles']);
 Route::post('/update-article/{articulo_id}', [ArticulosController::class,'update_articles']);
 Route::get('/delete-article/{articulo_id}', [ArticulosController::class,'delete_articles']);
 Route::get('/download-article/{articulo_id}', [ArticulosController::class,'descargar']);
+
+
+//Rutas mongo
+Route::get('/add-article', [ArticulosController::class,'index_mongo']);
+Route::post('/save-article', [ArticulosController::class,'insertar_mongo']);
+Route::post('/busqueda/{tipo}/{contenido}', [ArticulosController::class,'buscar']);
+
+
 
 
 /* 

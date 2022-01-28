@@ -17,6 +17,7 @@
 <body>
     @php
         $id= Session::get('id');
+        $nombre = Session::get('nombre')
     @endphp
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
@@ -27,7 +28,7 @@
                 </ul>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary" disabled data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                        {{ Session::get('nombre')}}
+                        {{ $nombre}}
                     </button>
                 </div>
             </div>

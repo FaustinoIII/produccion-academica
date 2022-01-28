@@ -54,6 +54,10 @@
                             <a href="{{url('/dashboard')}}" class="nav-link px-0 align-middle">
                                 <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Usuarios</span> </a>
                         </li>
+                        {{-- <li>
+                            <a href="{{url('/add-article')}}"  class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Registrar articulo</span> </a>
+                        </li> --}}
                         <li>
                             <a href="{{url('/user-logout')}}" class="nav-link px-0 align-middle">
                                 <i class="fs-4 bi-box-arrow-in-left"></i> <span class="ms-1 d-none d-sm-inline">Log out</span> </a>

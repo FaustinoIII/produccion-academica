@@ -3,9 +3,7 @@
 @section('title','Produccion academica')
 
 @php
-    $result=DB::table('users')
-        ->orderBy('id_usuario')
-        ->get();
+    $result=$data;
 @endphp
 
 @section('content')

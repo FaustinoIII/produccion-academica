@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Cart;
+use App\Models\usuario;
 use Illuminate\Support\Facades\Redirect;
+//session_start();
 
 class UserController extends Controller
 {
@@ -17,27 +18,31 @@ class UserController extends Controller
 
     public function user_registration(Request $request)
     {
-      $data=array();
-      $data['nombre']=$request->nombre;
-      $data['ap_paterno']=$request->ap_paterno;
-      $data['ap_materno']=$request->ap_materno;
-      $data['fecha_nac']=$request->fecha_nac; 
-      $data['calle']=$request->calle;
-      $data['colonia']=$request->colonia;
-      $data['cp']=$request->cp; 
-      $data['ciudad']=$request->ciudad;
-      $data['estado']=$request->estado; 
-      $data['telefono']=$request->telefono;
-      $data['grado_estudios']=$request->grado_estudios;
-      $data['email']=$request->email; 
-      $data['password']=$request->password; 
+        $result = usuario::max('id_usuario');
+        $id_aux = intval($result);
+        $id_aux++;
 
-        $id_usuario=DB::table('users')
-                     ->insertGetId($data);
+      $data=new usuario();
+      $data->id_usuario=strval($id_aux);
+      $data->nombre=$request->nombre;
+      $data->ap_paterno=$request->ap_paterno;
+      $data->ap_materno=$request->ap_materno;
+      $data->fecha_nac=$request->fecha_nac; 
+      $data->calle=$request->calle;
+      $data->colonia=$request->colonia;
+      $data->cp=$request->cp; 
+      $data->ciudad=$request->ciudad;
+      $data->estado=$request->estado; 
+      $data->telefono=$request->telefono;
+      $data->grado_estudios=$request->grado_estudios;
+      $data->email=$request->email; 
+      $data->password=$request->password; 
+      $data->tipo_usuario='0';
+      $data->save();
         
-               Session::put('id_usuario',$id_usuario);
-               Session::put('nombre',$request->nombre);
-               return Redirect('/login-user');      
+            Session::put('id_usuario',$id_aux);
+            Session::put('nombre',$request->nombre);
+            return Redirect('/login-user');      
 
     }
 
@@ -45,8 +50,7 @@ class UserController extends Controller
     public function user_login(Request $request){      
         $email=$request->email; 
         $password=$request->password;      
-        $result=DB::table('users')
-            ->where('email', $email)
+        $result=usuario::where('email', $email)
             ->where('password', $password) 
             ->where('tipo_usuario','0')
             ->first();
@@ -66,39 +70,26 @@ class UserController extends Controller
       Session::flush();
       return Redirect::to('/');
     }
-        
-    public function manage_user_profile(){ 
-        $this->AdminAuthCheck();
-        $id_usuario=Session::get('id_usuario');
-        $user_info=DB::table('users')
-                    ->where('id_usuario', $id_usuario)
-                    ->first();
-        $user_info=view('estudiante.manage_student_profile')
-            ->with('estudiante_info', $user_info);
-        return view('adminEstudiante_layout')
-            ->with('estudiante.manage_student_profile', $user_info);
-                
-    }
+
     
-     public function update_user_profile(Request $request, $id_usuario){             
-        $data=array();
-        $data['nombre']=$request->nombre;
-        $data['ap_paterno']=$request->ap_paterno;
-        $data['ap_materno']=$request->ap_materno;
-        $data['fecha_nac']=$request->fecha_nac; 
-        $data['calle']=$request->calle;
-        $data['colonia']=$request->colonia;
-        $data['cp']=$request->cp; 
-        $data['ciudad']=$request->ciudad;
-        $data['estado']=$request->estado; 
-        $data['telefono']=$request->telefono;
-        $data['grado_estudios']=$request->grado_estudios;
-        $data['email']=$request->email; 
+     public function update_user_profile(Request $request, $id_usuario){      
+        $data=usuario::where('id_usuario',$id_usuario)->first();
+        $data->nombre=$request->nombre;
+        $data->ap_paterno=$request->ap_paterno;
+        $data->ap_materno=$request->ap_materno;
+        $data->fecha_nac=$request->fecha_nac; 
+        $data->calle=$request->calle;
+        $data->colonia=$request->colonia;
+        $data->cp=$request->cp; 
+        $data->ciudad=$request->ciudad;
+        $data->estado=$request->estado; 
+        $data->telefono=$request->telefono;
+        $data->grado_estudios=$request->grado_estudios;
+        $data->email=$request->email; 
                     
-        DB::table('users')
-            ->where('id_usuario', $id_usuario)
-            ->update($data);
-        Session::put('message', 'Datos actualizados correctamente. ');
+        $data->save();
+
+        //Session::put('message', 'Datos actualizados correctamente. ');
         return Redirect::to('/dashboard-user');    
     }
     

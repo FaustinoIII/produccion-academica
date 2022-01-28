@@ -5,27 +5,15 @@
 @section('content')
 <div class="espacio"><br></div>
     <x-barra_busqueda/>
+    @foreach ($articulos as $articulo)
     @php
-        $result=DB::table('articulos')
-            ->orderBy('id_articulo')
-            ->take(5)
-            ->get();
+        $autores=$articulo->getAutores($articulo->autores);
+        $tipo=$articulo->getTipo($articulo->tipo_art);
     @endphp
-    @foreach ($result as $articulos)
-        <x-articulo :titulo="$articulos->titulo">
-            @php
-                $tipo=DB::table('tipo_art')
-                ->where('id_tipo', $articulos->tipo)
-                ->first();
-            @endphp
+        <x-articulo :titulo="$articulo->titulo">
             <x-slot name="tipo_art">
-                {{$tipo->nombre}}
+                {{$tipo}}
             </x-slot>
-            @php
-                $autores=DB::table('autores')
-                ->where('id_autores', $articulos->autores)
-                ->first();
-            @endphp
             <x-slot name="autor1">
                 {{$autores->autor1}}
             </x-slot>
@@ -39,16 +27,16 @@
                 {{$autores->autor4}}
             </x-slot>
             <x-slot name="abstract">
-                {{$articulos->abstract}}
+                {{$articulo->abstract}}
             </x-slot>
             <x-slot name="revista">
-                {{$articulos->revista}}
+                {{$articulo->revista}}
             </x-slot>
             <x-slot name="url">
-                {{$articulos->url}}
+                {{$articulo->url}}
             </x-slot>
             <x-slot name="pdf">
-                {{$articulos->pdf}}
+                {{$articulo->pdf}}
             </x-slot>
         </x-articulo>
     @endforeach

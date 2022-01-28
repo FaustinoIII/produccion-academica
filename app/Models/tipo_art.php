@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class tipo_art extends Model
+class tipo_art extends Eloquent
 {
-    use HasFactory;
+    protected $connection = 'mongodb';
+    protected $collection = 'tipo_articulos';
+    protected $primaryKey = 'id_tipo';
 
-    protected $table = "tipo_art";
+    protected $fillable = [
+        'id_tipo', 'nombre'
+    ];
 }
